@@ -34,5 +34,23 @@ namespace FundooNoteApp.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+
+        /*
+        [HttpPost("authenticate")]
+        public IActionResult Login(Login model)
+        {
+            var response = userBL.Login(model);
+
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(response);
+        }
+        */
+
+
+
+
     }
 }
