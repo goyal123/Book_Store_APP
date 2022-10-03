@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Identity;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
@@ -29,6 +30,18 @@ namespace BusinessLayer.Service
             }
         }
 
+        public string LoginUser(string email,string password)
+        {
+            try
+            {
+                return this.userRL.LoginUser(email, password);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
 
 
     }

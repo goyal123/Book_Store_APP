@@ -1,8 +1,11 @@
 ﻿using BusinessLayer.Interface;
+using BusinessLayer.Service;
 using CommonLayer.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RepositoryLayer.Context;
 using System;
+using System.Linq;
 
 namespace FundooNoteApp.Controllers
 {
@@ -35,19 +38,26 @@ namespace FundooNoteApp.Controllers
             }
         }
 
-
-        /*
-        [HttpPost("authenticate")]
-        public IActionResult Login(Login model)
+        [HttpPost("Login")]
+        public IActionResult LoginUser(string email,string password)
         {
-            var response = userBL.Login(model);
+            try
+            {
+                var userdata = userBL.LoginUser(email, password);
+                if (userdata!=null)
+                    return this.Ok(new { success = true, message = "User Login Successfull", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Invalid Credentials" });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
 
-            if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            return Ok(response);
         }
-        */
+
+
+        
 
 
 
