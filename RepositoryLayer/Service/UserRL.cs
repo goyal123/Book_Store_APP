@@ -44,6 +44,24 @@ namespace RepositoryLayer.Service
             }
         }
 
+        public string LoginUser(Login login)
+        {
+            try
+            {
+                LoginEntity loginentity = new LoginEntity();
+                var result= fundooContext.UserTable.Where(u => u.Email==login.Email && u.Password==login.Password).FirstOrDefault();
+                if (result != null)
+                    return GetJWTToken(result.Email, result.UserID);
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /*
         public string LoginUser(string email,string password)
         {
             var result = fundooContext.UserTable.Where(u => u.Email == email && u.Password == password).FirstOrDefault();
@@ -52,6 +70,7 @@ namespace RepositoryLayer.Service
             else
                 return null;
         }
+        */
 
         private static string GetJWTToken(string email,long userID)
         {
@@ -73,6 +92,28 @@ namespace RepositoryLayer.Service
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
               
+        }
+
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                var emailcheck = fundooContext.UserTable.FirstOrDefault(e => e.Email == email);
+                if (emailcheck != null)
+                {
+                    var token = GetJWTToken(emailcheck.Email, emailcheck.UserID);
+                    MSMQModel mSMQ = new MSMQModel();
+                    mSMQ.sendData2Queue(token);
+                    return token.ToString();
+                }
+                else
+                    return null;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         
 

@@ -30,6 +30,19 @@ namespace BusinessLayer.Service
             }
         }
 
+        public string LoginUser(Login login)
+        {
+            try
+            {
+                return userRL.LoginUser(login);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /*
         public string LoginUser(string email,string password)
         {
             try
@@ -42,7 +55,19 @@ namespace BusinessLayer.Service
             }
 
         }
+        */
 
+        public string ForgetPassword(string email)
+        {
+            try
+            {
+                return this.userRL.ForgetPassword(email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 }

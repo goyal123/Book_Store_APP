@@ -39,6 +39,23 @@ namespace FundooNoteApp.Controllers
         }
 
         [HttpPost("Login")]
+        public IActionResult Login(Login login)
+        {
+            try
+            {
+                var userdata = userBL.LoginUser(login);
+                if (userdata != null)
+                    return this.Ok(new { success = true, message = "User Login Successfull", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Invalid Credentials" });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+        /*
         public IActionResult LoginUser(string email,string password)
         {
             try
@@ -55,9 +72,31 @@ namespace FundooNoteApp.Controllers
             }
 
         }
+        */
+
+        [HttpPost("ForgotPassword")]
+        public IActionResult forgotpassword(string emailid)
+        {
+            try
+            {
+                var result = userBL.ForgetPassword(emailid);
+                if(result!=null)
+                    return this.Ok(new { success = true, message = "Password reset link send Successfull"});
+                else
+                    return this.BadRequest(new { success = false, message = "User not registered" });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
 
 
-        
+
+
+
+
 
 
 
