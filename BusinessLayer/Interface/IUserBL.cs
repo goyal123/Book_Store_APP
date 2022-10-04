@@ -13,6 +13,8 @@ namespace BusinessLayer.Interface
 
         public string LoginUser(Login login);
 
+        public ResetEntity ResetPassUser(ResetPassword resetpass);
+
         public string ForgetPassword(string email);
     }
 }

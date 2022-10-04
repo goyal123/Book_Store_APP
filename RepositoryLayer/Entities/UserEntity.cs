@@ -23,4 +23,11 @@ namespace RepositoryLayer.Entities
         public string Email { get; set; }
         public string Password { get; set; }
     }
+
+    public class ResetEntity
+    {
+        public string email { get; set; }
+        public string currentPassword { get; set; }
+        public string newPassword { get; set; }
+    }
 }

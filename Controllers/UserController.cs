@@ -55,6 +55,26 @@ namespace FundooNoteApp.Controllers
             }
 
         }
+
+        [HttpPost("ResetPassword")]
+        public IActionResult ResetPassword(ResetPassword resetpass)
+        {
+            try
+            {
+                var userdata = userBL.ResetPassUser(resetpass);
+                if (userdata != null)
+                    return this.Ok(new { success = true, message = "Reset password Successfull", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Reset Password failed" });
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
         /*
         public IActionResult LoginUser(string email,string password)
         {

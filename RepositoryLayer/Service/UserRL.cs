@@ -61,6 +61,35 @@ namespace RepositoryLayer.Service
             }
         }
 
+        public ResetEntity ResetPassUser(ResetPassword resetpass)
+        {
+            try
+            {
+                ResetEntity resetentity = new ResetEntity();
+                resetentity.email = resetpass.email;
+                resetentity.currentPassword = resetpass.currentPassword;
+                resetentity.newPassword = resetpass.newPassword;
+                var result = fundooContext.UserTable.Where(u => u.Email == resetpass.email && u.Password == resetpass.currentPassword).FirstOrDefault();
+                if (result != null)
+                {
+                    result.Password = resetpass.newPassword;
+                    int ans = fundooContext.SaveChanges();
+                    if (ans > 0)
+                        return resetentity;
+                    else
+                        return null;
+                    //fundooContext.UserTable.Update()
+                }
+                else
+                    return null;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         /*
         public string LoginUser(string email,string password)
         {

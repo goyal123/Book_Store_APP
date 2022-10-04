@@ -42,6 +42,18 @@ namespace BusinessLayer.Service
             }
         }
 
+        public ResetEntity ResetPassUser(ResetPassword resetpass)
+        {
+            try
+            {
+                return userRL.ResetPassUser(resetpass);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         /*
         public string LoginUser(string email,string password)
         {
