@@ -36,10 +36,10 @@ namespace CommonLayer.Model
                 var smtp = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
-                    Credentials = new NetworkCredential("happy642@gmail.com", "hyocuylrgclpstyb"),
+                    Credentials = new NetworkCredential("happy642world@gmail.com", "jvtaozxxrdtrgyep"),
                     EnableSsl = true
                 };
-                smtp.Send("happy642@gmail.com", "akhilcsebtech@gmail.com", subject, body);
+                smtp.Send("happy642world@gmail.com", "happy642world@gmail.com", subject, body);
 
                 messagequeue.BeginReceive();
 

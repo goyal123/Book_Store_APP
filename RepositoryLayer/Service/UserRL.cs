@@ -61,18 +61,17 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public ResetEntity ResetPassUser(ResetPassword resetpass)
+        public ResetEntity ResetPassUser(string email,ResetPassword resetpass)
         {
             try
             {
                 ResetEntity resetentity = new ResetEntity();
-                resetentity.email = resetpass.email;
-                resetentity.currentPassword = resetpass.currentPassword;
-                resetentity.newPassword = resetpass.newPassword;
-                var result = fundooContext.UserTable.Where(u => u.Email == resetpass.email && u.Password == resetpass.currentPassword).FirstOrDefault();
+                resetentity.Password = resetpass.Password;
+                resetentity.ConfirmPassword = resetpass.ConfirmPassword;
+                var result = fundooContext.UserTable.Where(u => u.Email == email).FirstOrDefault();
                 if (result != null)
                 {
-                    result.Password = resetpass.newPassword;
+                    result.Password = resetpass.Password;
                     int ans = fundooContext.SaveChanges();
                     if (ans > 0)
                         return resetentity;

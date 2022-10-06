@@ -42,11 +42,11 @@ namespace BusinessLayer.Service
             }
         }
 
-        public ResetEntity ResetPassUser(ResetPassword resetpass)
+        public ResetEntity ResetPassUser(string email,ResetPassword resetpass)
         {
             try
             {
-                return userRL.ResetPassUser(resetpass);
+                return userRL.ResetPassUser(email,resetpass);
             }
             catch (Exception ex)
             {

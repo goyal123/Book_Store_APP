@@ -1,11 +1,13 @@
 ﻿using BusinessLayer.Interface;
 using BusinessLayer.Service;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Context;
 using System;
 using System.Linq;
+using System.Security.Claims;
 
 namespace FundooNoteApp.Controllers
 {
@@ -55,13 +57,14 @@ namespace FundooNoteApp.Controllers
             }
 
         }
-
+        //[Authorize]
         [HttpPost("ResetPassword")]
         public IActionResult ResetPassword(ResetPassword resetpass)
-        {
+         {
             try
             {
-                var userdata = userBL.ResetPassUser(resetpass);
+                var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                var userdata = userBL.ResetPassUser(email,resetpass);
                 if (userdata != null)
                     return this.Ok(new { success = true, message = "Reset password Successfull", data = userdata });
                 else
@@ -93,7 +96,7 @@ namespace FundooNoteApp.Controllers
 
         }
         */
-
+        
         [HttpPost("ForgotPassword")]
         public IActionResult forgotpassword(string emailid)
         {
@@ -101,7 +104,7 @@ namespace FundooNoteApp.Controllers
             {
                 var result = userBL.ForgetPassword(emailid);
                 if(result!=null)
-                    return this.Ok(new { success = true, message = "Password reset link send Successfull"});
+                    return this.Ok(new { success = true, message = "Password reset link send Successfull",data=result});
                 else
                     return this.BadRequest(new { success = false, message = "User not registered" });
             }
