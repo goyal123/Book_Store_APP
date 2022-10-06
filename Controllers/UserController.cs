@@ -76,6 +76,26 @@ namespace FundooNoteApp.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        /*
+        [Authorize]
+        [HttpPost("CreateNote")]
+        public IActionResult CreateNote(Notes createnote)
+        {
+            try
+            {
+                var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
+                var userdata = noteBL.CreateNoteUser(email,createnote);
+                if (userdata != null)
+                    return this.Ok(new { success = true, message = "Note created Successfull", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Not able to create note" });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        */
 
 
         /*

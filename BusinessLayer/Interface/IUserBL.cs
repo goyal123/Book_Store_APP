@@ -16,5 +16,7 @@ namespace BusinessLayer.Interface
         public ResetEntity ResetPassUser(string email, ResetPassword resetpass);
 
         public string ForgetPassword(string email);
+
+        //public NoteEntity CreateNoteUser(string email,Notes createnote);
     }
 }

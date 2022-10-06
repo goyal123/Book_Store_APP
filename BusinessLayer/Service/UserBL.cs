@@ -53,6 +53,20 @@ namespace BusinessLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /*
+        public NoteEntity CreateNoteUser(string email,Notes createnote)
+        {
+            try
+            {
+                return userRL.CreatNoteUser(email,createnote);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+        */
 
         /*
         public string LoginUser(string email,string password)

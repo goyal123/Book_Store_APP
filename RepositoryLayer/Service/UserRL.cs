@@ -43,6 +43,38 @@ namespace RepositoryLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        /*
+        public NoteEntity CreatNoteUser(string email,Notes createnote)
+        {
+            try
+            {
+                NoteEntity noteEntity = new NoteEntity();
+                var result = fundooContext.UserTable.Where(u => u.Email == email).FirstOrDefault();
+                noteEntity.Title = createnote.Title;
+                noteEntity.Description = createnote.Description;
+                noteEntity.Reminder = createnote.Reminder;
+                noteEntity.image = createnote.image;
+                noteEntity.pinned = createnote.pinned;
+                noteEntity.archieve = createnote.archieve;
+                noteEntity.Color = createnote.Color;
+                noteEntity.Created_At = createnote.Created_At;
+                noteEntity.Updated_At=createnote.Updated_At;
+                noteEntity.trash = createnote.trash;
+                noteEntity.UserId=result.UserID;
+                fundooContext.NoteTable.Add(noteEntity);
+                int ans = fundooContext.SaveChanges();
+                if (ans > 0)
+                    return noteEntity;
+                else
+                    return null;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }*/
 
         public string LoginUser(Login login)
         {
@@ -68,16 +100,21 @@ namespace RepositoryLayer.Service
                 ResetEntity resetentity = new ResetEntity();
                 resetentity.Password = resetpass.Password;
                 resetentity.ConfirmPassword = resetpass.ConfirmPassword;
-                var result = fundooContext.UserTable.Where(u => u.Email == email).FirstOrDefault();
-                if (result != null)
+                if(resetentity.Password.Equals(resetentity.ConfirmPassword))
                 {
-                    result.Password = resetpass.Password;
-                    int ans = fundooContext.SaveChanges();
-                    if (ans > 0)
-                        return resetentity;
+                    var result = fundooContext.UserTable.Where(u => u.Email == email).FirstOrDefault();
+                    if (result != null)
+                    {
+                        result.Password = resetpass.Password;
+                        int ans = fundooContext.SaveChanges();
+                        if (ans > 0)
+                            return resetentity;
+                        else
+                            return null;
+                        //fundooContext.UserTable.Update()
+                    }
                     else
                         return null;
-                    //fundooContext.UserTable.Update()
                 }
                 else
                     return null;

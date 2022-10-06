@@ -15,5 +15,7 @@ namespace RepositoryLayer.Interface
         public ResetEntity ResetPassUser(string email,ResetPassword resetpass);
 
         public string ForgetPassword(string email);
+
+        //public NoteEntity CreatNoteUser(string email,Notes createnote);
     }
 }
