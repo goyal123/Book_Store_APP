@@ -57,7 +57,7 @@ namespace FundooNoteApp.Controllers
             }
 
         }
-        //[Authorize]
+        [Authorize]
         [HttpPost("ResetPassword")]
         public IActionResult ResetPassword(ResetPassword resetpass)
          {

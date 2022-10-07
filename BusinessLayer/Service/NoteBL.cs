@@ -16,11 +16,11 @@ namespace BusinessLayer.Service
         {
             this.noteRL = noteRL;
         }
-        public NoteEntity CreateNoteUser(string email, Notes createnote)
+        public NoteEntity CreateNoteUser(long UserId, Notes createnote)
         {
             try
             {
-                return noteRL.CreatNoteUser(email, createnote);
+                return noteRL.CreatNoteUser(UserId, createnote);
             }
             catch (Exception ex)
             {
@@ -28,6 +28,21 @@ namespace BusinessLayer.Service
             }
 
         }
+
+        public List<NoteEntity> GetNoteUser(long UserId)
+        {
+            try
+            {
+                return noteRL.GetNotUser(UserId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
 
 
     }

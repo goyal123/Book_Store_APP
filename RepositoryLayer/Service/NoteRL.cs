@@ -1,4 +1,5 @@
 ﻿using CommonLayer.Model;
+using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
@@ -17,12 +18,12 @@ namespace RepositoryLayer.Service
         {
             this.fundooContext = fundooContext;
         }
-        public NoteEntity CreatNoteUser(string email, Notes createnote)
+        public NoteEntity CreatNoteUser(long UserId, Notes createnote)
         {
             try
             {
                 NoteEntity noteEntity = new NoteEntity();
-                var result = fundooContext.UserTable.Where(u => u.Email == email).FirstOrDefault();
+                var result = fundooContext.UserTable.Where(u => u.UserID == UserId).FirstOrDefault();
                 noteEntity.Title = createnote.Title;
                 noteEntity.Description = createnote.Description;
                 noteEntity.Reminder = createnote.Reminder;
@@ -47,6 +48,19 @@ namespace RepositoryLayer.Service
                 throw new Exception(ex.Message);
             }
 
+        }
+
+        public List<NoteEntity> GetNotUser(long UserId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(u => u.UserId == UserId).ToList();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }
