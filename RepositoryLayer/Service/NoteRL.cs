@@ -98,7 +98,7 @@ namespace RepositoryLayer.Service
                     result.Description=updateNote.Description;
                     result.Reminder = updateNote.Reminder;
                     result.Updated_At = updateNote.Updated_At;
-                    result.Created_At = updateNote.Updated_At;
+                    result.Created_At = updateNote.Created_At;
                     result.archieve = updateNote.archieve;
                     result.pinned = updateNote.pinned;
                     result.Color = updateNoteobj.Color;
