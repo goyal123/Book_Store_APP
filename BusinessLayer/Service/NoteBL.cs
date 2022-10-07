@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Service;
@@ -34,6 +35,18 @@ namespace BusinessLayer.Service
             try
             {
                 return noteRL.GetNotUser(UserId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+        public bool DeleteNoteUser(long userId,long noteId)
+        {
+            try
+            {
+                return noteRL.DeleteNoteUser(userId, noteId);
             }
             catch (Exception ex)
             {

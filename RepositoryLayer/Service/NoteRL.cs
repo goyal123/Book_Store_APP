@@ -62,5 +62,26 @@ namespace RepositoryLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+
+        public bool DeleteNoteUser(long userId,long noteid)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(u => u.UserId == userId && u.NoteID==noteid).FirstOrDefault();
+                if (result != null)
+                {
+                    fundooContext.NoteTable.Remove(result);
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                    return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
