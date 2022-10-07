@@ -13,5 +13,7 @@ namespace RepositoryLayer.Interface
         public List<NoteEntity> GetNotUser(long UserId);
 
         public bool DeleteNoteUser(long userId, long noteid);
+
+        public bool UpdateNoteUser(long userId, long noteId, Notes updateNote);
     }
 }

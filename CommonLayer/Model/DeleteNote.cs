@@ -6,6 +6,6 @@ namespace CommonLayer.Model
 {
     public class DeleteNote
     {
-        public long NoteID;
+        //public long NoteID;
     }
 }

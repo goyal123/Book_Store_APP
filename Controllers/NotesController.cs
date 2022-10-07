@@ -40,6 +40,30 @@ namespace FundooNoteApp.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        [Authorize]
+        [HttpPatch("UpdateNote")]
+        public IActionResult UpdateNote(long noteId,Notes updatenote)
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+                var userdata = noteBL.UpdateNoteUser(userId, noteId,updatenote);
+                if (userdata==true)
+                    return this.Ok(new { success = true, message = "Note updated Successfull", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Not able to update note" });
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+
 
         [HttpGet("GetNote")]
         public IActionResult GetNote()

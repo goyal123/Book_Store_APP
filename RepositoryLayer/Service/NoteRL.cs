@@ -5,6 +5,7 @@ using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -82,6 +83,62 @@ namespace RepositoryLayer.Service
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public bool UpdateNoteUser(long userId, long noteId,Notes updateNote)
+        {
+            try
+            {
+                NoteEntity updateNoteobj = new NoteEntity();
+                var result = fundooContext.NoteTable.Where(u => u.UserId == userId && u.NoteID == noteId).FirstOrDefault();
+                if (result != null)
+                {
+                    //UpdateNoteEntity updateNoteobj = new UpdateNoteEntity();
+                    result.Title = updateNote.Title;
+                    result.Description=updateNote.Description;
+                    result.Reminder = updateNote.Reminder;
+                    result.Updated_At = updateNote.Updated_At;
+                    result.Created_At = updateNote.Updated_At;
+                    result.archieve = updateNote.archieve;
+                    result.pinned = updateNote.pinned;
+                    result.Color = updateNoteobj.Color;
+                    result.trash = updateNoteobj.trash;
+                    fundooContext.NoteTable.Update(result);
+                    int ans=fundooContext.SaveChanges();
+                    if (ans > 0)
+                        return true;
+                    else
+                        return false;
+
+                    /*
+                    updateNoteobj.Title = updateNote.Title;
+                    updateNoteobj.Description = updateNote.Description;
+                    updateNoteobj.Reminder = updateNote.Reminder;
+                    updateNoteobj.Color = updateNote.Color;
+                    updateNoteobj.image = updateNote.image;
+                    updateNoteobj.archieve = updateNote.archieve;
+                    updateNote.pinned = updateNote.pinned;
+                    updateNoteobj.trash = updateNote.trash;
+                    updateNoteobj.Created_At = updateNote.Created_At;
+                    updateNoteobj.Updated_At = updateNote.Updated_At;
+                    updateNoteobj.NoteID = result.NoteID;
+                    updateNoteobj.UserId = result.UserId;
+                    fundooContext.NoteTable.Update(updateNoteobj);
+                    int ans = fundooContext.SaveChanges();
+                    
+                    if (ans > 0)
+                        return true;
+                    else
+                        return false;*/
+                }
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
     }
 }
