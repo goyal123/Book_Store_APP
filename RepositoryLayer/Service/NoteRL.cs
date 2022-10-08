@@ -56,7 +56,9 @@ namespace RepositoryLayer.Service
             try
             {
                 var result = fundooContext.NoteTable.Where(u => u.UserId == UserId).ToList();
+                //if(result.Count!=0)
                 return result;
+                
             }
             catch (Exception ex)
             {
@@ -89,7 +91,7 @@ namespace RepositoryLayer.Service
         {
             try
             {
-                NoteEntity updateNoteobj = new NoteEntity();
+                //NoteEntity updateNoteobj = new NoteEntity();
                 var result = fundooContext.NoteTable.Where(u => u.UserId == userId && u.NoteID == noteId).FirstOrDefault();
                 if (result != null)
                 {
@@ -101,8 +103,8 @@ namespace RepositoryLayer.Service
                     result.Created_At = updateNote.Created_At;
                     result.archieve = updateNote.archieve;
                     result.pinned = updateNote.pinned;
-                    result.Color = updateNoteobj.Color;
-                    result.trash = updateNoteobj.trash;
+                    result.Color = updateNote.Color;
+                    result.trash = updateNote.trash;
                     fundooContext.NoteTable.Update(result);
                     int ans=fundooContext.SaveChanges();
                     if (ans > 0)
