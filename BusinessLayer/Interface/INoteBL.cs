@@ -15,6 +15,10 @@ namespace BusinessLayer.Interface
         public bool DeleteNoteUser(long userId, long noteid);
 
         //public bool UpdateNoteUser(long userId, long noteId);
-        public bool UpdateNoteUser(long userId, long noteId, Notes updateNote);
+        public NoteEntity UpdateNoteUser(long userId, long noteId, Notes updateNote);
+
+        public NoteEntity UpdateNoteColor(long userId, long noteId, string color);
+
+        public NoteEntity Ispinned(long userId, long noteId);
     }
 }

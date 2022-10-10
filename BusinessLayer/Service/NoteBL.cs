@@ -54,7 +54,7 @@ namespace BusinessLayer.Service
             }
 
         }
-        public bool UpdateNoteUser(long userId, long noteId,Notes updateNote)
+        public NoteEntity UpdateNoteUser(long userId, long noteId,Notes updateNote)
         {
             try
             {
@@ -66,6 +66,34 @@ namespace BusinessLayer.Service
             }
 
         }
+
+        public NoteEntity UpdateNoteColor(long userId, long noteId,string color)
+        {
+            try
+            {
+                return noteRL.UpdateNoteColor(userId, noteId,color);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public NoteEntity Ispinned(long userId, long noteId)
+        {
+            try
+            {
+                return noteRL.Ispinned(userId, noteId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
 
 
 

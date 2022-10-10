@@ -87,7 +87,7 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public bool UpdateNoteUser(long userId, long noteId,Notes updateNote)
+        public NoteEntity UpdateNoteUser(long userId, long noteId,Notes updateNote)
         {
             try
             {
@@ -108,9 +108,9 @@ namespace RepositoryLayer.Service
                     fundooContext.NoteTable.Update(result);
                     int ans=fundooContext.SaveChanges();
                     if (ans > 0)
-                        return true;
+                        return result;
                     else
-                        return false;
+                        return null;
 
                     /*
                     updateNoteobj.Title = updateNote.Title;
@@ -134,7 +134,55 @@ namespace RepositoryLayer.Service
                         return false;*/
                 }
                 else
-                    return false;
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public NoteEntity UpdateNoteColor(long userId, long noteId,string color)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(u => u.UserId == userId && u.NoteID == noteId).FirstOrDefault();
+                if (result != null)
+                {
+                    result.Color = color;
+                    fundooContext.NoteTable.Update(result);
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public NoteEntity Ispinned(long userId, long noteId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(u => u.UserId == userId && u.NoteID == noteId).FirstOrDefault();
+                if (result.pinned == true)
+                {
+                    result.pinned = false;
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+                else
+                {
+                    result.pinned = true;
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+               
             }
             catch (Exception ex)
             {

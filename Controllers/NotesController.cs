@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System;
 using System.Linq;
+using System.Drawing;
 
 namespace FundooNoteApp.Controllers
 {
@@ -48,7 +49,7 @@ namespace FundooNoteApp.Controllers
             {
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.UpdateNoteUser(userId, noteId,updatenote);
-                if (userdata==true)
+                if (userdata!=null)
                     return this.Ok(new { success = true, message = "Note updated Successfull", data = userdata });
                 else
                     return this.BadRequest(new { success = false, message = "Not able to update note" });
@@ -105,6 +106,55 @@ namespace FundooNoteApp.Controllers
             }
 
         }
+
+        [Authorize]
+        [HttpPut("UpdateColor")]
+        public IActionResult UpdateNoteColor(long noteId, string color)
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+                var userdata = noteBL.UpdateNoteColor(userId, noteId,color);
+                if (userdata!=null)
+                    return this.Ok(new { success = true, message = "Color updated successfully", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Update Operation failed" });
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        [Authorize]
+        [HttpPatch("Pinned")]
+        public IActionResult Ispinned(long noteId)
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+                var userdata = noteBL.Ispinned(userId, noteId);
+                if (userdata.pinned==true)
+                    return this.Ok(new { success = true, message = "Pinned successfully", data = userdata });
+                else
+                    return this.BadRequest(new { success = true, message = "UnPinned successfully", data = userdata });
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+
+
+
         
 
 
