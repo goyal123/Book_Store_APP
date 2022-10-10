@@ -21,5 +21,7 @@ namespace RepositoryLayer.Interface
         public NoteEntity Ispinned(long userId, long noteId);
 
         public NoteEntity IsArchieve(long userId, long noteId);
+
+        public NoteEntity IsTrashed(long userId, long noteId);
     }
 }

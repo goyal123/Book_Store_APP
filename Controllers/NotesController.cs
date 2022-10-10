@@ -130,7 +130,7 @@ namespace FundooNoteApp.Controllers
         }
 
         [Authorize]
-        [HttpPatch("Pinned")]
+        [HttpPatch("IsPinned")]
         public IActionResult Ispinned(long noteId)
         {
             try
@@ -155,7 +155,7 @@ namespace FundooNoteApp.Controllers
         }
 
         [Authorize]
-        [HttpPut("Archieve")]
+        [HttpPut("IsArchieve")]
         public IActionResult Archieve(long noteId)
         {
             try
@@ -165,7 +165,7 @@ namespace FundooNoteApp.Controllers
                 if (userdata.archieve == true)
                     return this.Ok(new { success = true, message = "Archieved successfully", data = userdata });
                 else if(userdata.archieve == false)
-                    return this.BadRequest(new { success = true, message = "UnArchieved successfully", data = userdata });
+                    return this.Ok(new { success = true, message = "UnArchieved successfully", data = userdata });
                 else
                     return this.BadRequest(new { success = false, message = "Archieve Operation failed" });
 
@@ -176,6 +176,31 @@ namespace FundooNoteApp.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [Authorize]
+        [HttpPut("IsTrashed")]
+
+        public IActionResult IsTrash(long noteId)
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+                var userdata = noteBL.IsTrashed(userId, noteId);
+                if (userdata.trash == true)
+                    return this.Ok(new { success = true, message = "Trashed successfully", data = userdata });
+                else if (userdata.trash == false)
+                    return this.Ok(new { success = true, message = "Untrashed successfully", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Trash Operation failed" });
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
 
 
 

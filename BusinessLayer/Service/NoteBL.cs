@@ -104,6 +104,18 @@ namespace BusinessLayer.Service
             }
         }
 
+        public NoteEntity IsTrashed(long userId, long noteId)
+        {
+            try
+            {
+                return noteRL.IsTrashed(userId, noteId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
 
 

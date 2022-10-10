@@ -20,7 +20,8 @@ namespace BusinessLayer.Interface
         public NoteEntity UpdateNoteColor(long userId, long noteId, string color);
 
         public NoteEntity Ispinned(long userId, long noteId);
-
         public NoteEntity IsArchieve(long userId, long noteId);
+
+        public NoteEntity IsTrashed(long userId, long noteId);
     }
 }

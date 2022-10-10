@@ -214,5 +214,30 @@ namespace RepositoryLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+
+        public NoteEntity IsTrashed(long userId,long noteId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(u => u.UserId == userId && u.NoteID == noteId).FirstOrDefault();
+                if (result.trash == true)
+                {
+                    result.trash = false;
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+                else
+                {
+                    result.trash = true;
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
     }
 }
