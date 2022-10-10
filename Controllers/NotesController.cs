@@ -42,7 +42,7 @@ namespace FundooNoteApp.Controllers
             }
         }
         [Authorize]
-        [HttpPatch("UpdateNote")]
+        [HttpPut("UpdateNote")]
         public IActionResult UpdateNote(long noteId,Notes updatenote)
         {
             try
@@ -108,7 +108,7 @@ namespace FundooNoteApp.Controllers
         }
 
         [Authorize]
-        [HttpPut("UpdateColor")]
+        [HttpPatch("UpdateColor")]
         public IActionResult UpdateNoteColor(long noteId, string color)
         {
             try
@@ -155,7 +155,7 @@ namespace FundooNoteApp.Controllers
         }
 
         [Authorize]
-        [HttpPut("IsArchieve")]
+        [HttpPatch("IsArchieve")]
         public IActionResult Archieve(long noteId)
         {
             try
@@ -178,7 +178,7 @@ namespace FundooNoteApp.Controllers
         }
 
         [Authorize]
-        [HttpPut("IsTrashed")]
+        [HttpPatch("IsTrashed")]
 
         public IActionResult IsTrash(long noteId)
         {
