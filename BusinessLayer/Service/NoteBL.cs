@@ -92,6 +92,18 @@ namespace BusinessLayer.Service
             }
         }
 
+        public NoteEntity IsArchieve(long userId, long noteId)
+        {
+            try
+            {
+                return noteRL.IsArchieve(userId, noteId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
 
 

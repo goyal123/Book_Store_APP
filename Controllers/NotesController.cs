@@ -139,8 +139,11 @@ namespace FundooNoteApp.Controllers
                 var userdata = noteBL.Ispinned(userId, noteId);
                 if (userdata.pinned==true)
                     return this.Ok(new { success = true, message = "Pinned successfully", data = userdata });
+                else if(userdata.pinned ==false)
+                    return this.Ok(new { success = true, message = "UnPinned successfully", data = userdata });
                 else
-                    return this.BadRequest(new { success = true, message = "UnPinned successfully", data = userdata });
+                    return this.BadRequest(new { success = false, message = "Archieve Operation failed" });
+
 
 
             }
@@ -149,6 +152,29 @@ namespace FundooNoteApp.Controllers
                 throw new Exception(ex.Message);
             }
 
+        }
+
+        [Authorize]
+        [HttpPut("Archieve")]
+        public IActionResult Archieve(long noteId)
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+                var userdata = noteBL.IsArchieve(userId, noteId);
+                if (userdata.archieve == true)
+                    return this.Ok(new { success = true, message = "Archieved successfully", data = userdata });
+                else if(userdata.archieve == false)
+                    return this.BadRequest(new { success = true, message = "UnArchieved successfully", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Archieve Operation failed" });
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
 

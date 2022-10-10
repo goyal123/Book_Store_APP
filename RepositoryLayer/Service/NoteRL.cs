@@ -190,5 +190,29 @@ namespace RepositoryLayer.Service
             }
 
         }
+
+        public NoteEntity IsArchieve(long userId,long noteId)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(u => u.UserId == userId && u.NoteID == noteId).FirstOrDefault();
+                if (result.archieve == true)
+                {
+                    result.archieve = false;
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+                else
+                {
+                    result.archieve = true;
+                    fundooContext.SaveChanges();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
