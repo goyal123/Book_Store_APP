@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
@@ -114,6 +115,19 @@ namespace BusinessLayer.Service
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public NoteEntity Image(long userId, long noteId, IFormFile file)
+        {
+            try
+            {
+                return noteRL.Image(userId,noteId,file);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
 
 

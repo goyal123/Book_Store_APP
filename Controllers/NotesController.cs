@@ -7,6 +7,13 @@ using System.Security.Claims;
 using System;
 using System.Linq;
 using System.Drawing;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
+using CloudinaryDotNet;
+using System.Collections.Generic;
+using CloudinaryDotNet.Actions;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 namespace FundooNoteApp.Controllers
 {
@@ -199,6 +206,30 @@ namespace FundooNoteApp.Controllers
                 throw new Exception(ex.Message);
             }
 
+        }
+
+        [Authorize]
+        [HttpPost("Image-Upload")]
+
+        public IActionResult Image(long noteId,IFormFile file)
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+                var userdata = noteBL.Image(userId, noteId,file);
+                if (userdata.trash == true)
+                    return this.Ok(new { success = true, message = "Image uploaded successfully", data = userdata });
+                else if (userdata.trash == false)
+                    return this.Ok(new { success = true, message = "Image not uploaded", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Image upload Operation failed" });
+
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -23,5 +24,7 @@ namespace RepositoryLayer.Interface
         public NoteEntity IsArchieve(long userId, long noteId);
 
         public NoteEntity IsTrashed(long userId, long noteId);
+
+        public NoteEntity Image(long userId, long noteId, IFormFile file);
     }
 }

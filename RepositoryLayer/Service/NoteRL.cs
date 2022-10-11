@@ -1,4 +1,7 @@
-﻿using CommonLayer.Model;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entities;
@@ -239,5 +242,39 @@ namespace RepositoryLayer.Service
             }
 
         }
+
+        public NoteEntity Image(long userId, long noteId, IFormFile file)
+        {
+            try
+            {
+                var result = fundooContext.NoteTable.Where(u => u.UserId == userId && u.NoteID == noteId).FirstOrDefault();
+                if(result!=null)
+                {
+                    CloudinaryDotNet.Account account = new CloudinaryDotNet.Account { ApiKey = "818957792646971", ApiSecret = "3DwNVsLP2GiQcH8Dy_GSOggh3x0", Cloud = "dyainxvh0" };
+                    Cloudinary _cloudinary = new Cloudinary(account);
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, file.OpenReadStream())
+                    };
+                    var uploadresult = _cloudinary.Upload(uploadParams);
+                    result.image=uploadresult.Url.ToString();
+                    fundooContext.SaveChanges();
+                    return result;
+
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
     }
 }
