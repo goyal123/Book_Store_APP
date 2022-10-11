@@ -31,6 +31,19 @@ namespace FundooNoteApp.Controllers
             else
                 return this.BadRequest(new { success = false, message = "Not able to collaborate note" });
         }
-    
+
+        [Authorize]
+        [HttpGet("GetCollab")]
+        public IActionResult GetCollab()
+        {
+            long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+            var userdata = collabBL.GetCollab(userId);
+            if (userdata != null)
+                return this.Ok(new { success = true, message = "Fetch Successfull", data = userdata });
+            else
+                return this.BadRequest(new { success = false, message = "Fetch operation failed" });
+
+        }
+
     }
 }

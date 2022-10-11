@@ -1,4 +1,5 @@
-﻿using RepositoryLayer.Context;
+﻿using CommonLayer.Model;
+using RepositoryLayer.Context;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using System;
@@ -37,6 +38,19 @@ namespace RepositoryLayer.Service
                 {
                     return null;
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public List<CollabEntity> GetCollab(long userId)
+        {
+            try
+            {    
+                var result = fundooContext.CollabTable.Where(u => u.Sender_UserId == userId).ToList();
+                return result;
             }
             catch (Exception ex)
             {
