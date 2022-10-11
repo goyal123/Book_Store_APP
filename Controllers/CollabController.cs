@@ -45,5 +45,18 @@ namespace FundooNoteApp.Controllers
 
         }
 
+        [Authorize]
+        [HttpDelete("RemoveCollab")]
+
+        public IActionResult RemoveCollab(long noteId,string emailId)
+        {
+            long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+            var userdata = collabBL.RemoveCollab(noteId,userId,emailId);
+            if (userdata != false)
+                return this.Ok(new { success = true, message = "Remove Successfull" });
+            else
+                return this.BadRequest(new { success = false, message = "Remove operation failed" });
+        }
+
     }
 }

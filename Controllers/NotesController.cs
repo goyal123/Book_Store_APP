@@ -232,13 +232,5 @@ namespace FundooNoteApp.Controllers
             }
         }
 
-
-
-
-
-
-        
-
-
     }
 }

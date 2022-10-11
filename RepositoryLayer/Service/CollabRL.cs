@@ -57,5 +57,25 @@ namespace RepositoryLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+
+        public bool RemoveCollab(long noteId,long userId, string emailId)
+        {
+            try
+            {
+                var result = fundooContext.CollabTable.Where(u => u.NoteId==noteId && u.Sender_UserId == userId && u.Receiver_Email==emailId).First();
+                if (result != null)
+                {
+                    fundooContext.CollabTable.Remove(result);
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

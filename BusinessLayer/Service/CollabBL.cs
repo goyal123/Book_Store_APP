@@ -40,5 +40,17 @@ namespace BusinessLayer.Service
                 throw new Exception(ex.Message);
             }
         }
+        public bool RemoveCollab(long noteId,long userId, string emailId)
+        {
+            try
+            {
+                return collabRL.RemoveCollab(noteId,userId, emailId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
     }
 }
