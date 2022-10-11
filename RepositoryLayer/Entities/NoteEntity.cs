@@ -23,7 +23,7 @@ namespace RepositoryLayer.Entities
         public DateTime Created_At { get; set; }
         public DateTime Updated_At { get; set; }
 
-        [ForeignKey("User")]
+        [ForeignKey("UserEntity")]
         //Adding foreign key constraint
         public long UserId { get; set; }
         //public virtual UserEntity User { get; set; }
