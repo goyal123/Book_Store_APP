@@ -11,5 +11,6 @@ namespace BusinessLayer.Interface
 
         public bool DeleteLabel(long userId, long noteId, string LabelName);
         public LabelEntity UpdateLabel(long userId, long noteId,long LabelId, string LabelName);
+        public List<LabelEntity> GetLabel(long userId);
     }
 }

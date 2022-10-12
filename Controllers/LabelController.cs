@@ -58,5 +58,18 @@ namespace FundooNoteApp.Controllers
                 return this.BadRequest(new { success = false, message = "Not able to Update Label" });
         }
 
+        [Authorize]
+        [HttpGet]
+
+        public IActionResult GetLabel()
+        {
+            long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+            var userdata = labeBL.GetLabel(userId);
+            if (userdata != null)
+                return this.Ok(new { success = true, message = "Label Fetch Successfully", data = userdata });
+            else
+                return this.BadRequest(new { success = false, message = "Not able to Fetch Label" });
+        }
+
     }
 }
