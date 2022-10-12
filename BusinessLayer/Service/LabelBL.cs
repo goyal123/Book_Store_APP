@@ -1,4 +1,6 @@
 ﻿using BusinessLayer.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using System;
@@ -40,5 +42,21 @@ namespace BusinessLayer.Service
             }
 
         }
+
+        public LabelEntity UpdateLabel(long userId,long noteId, long LabelId, string LabelName)
+        {
+            try
+            {
+                return labelRL.UpdateLabel(userId, noteId,LabelId,LabelName);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
+
     }
 }

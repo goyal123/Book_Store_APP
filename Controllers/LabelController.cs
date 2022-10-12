@@ -45,5 +45,18 @@ namespace FundooNoteApp.Controllers
                 return this.BadRequest(new { success = false, message = "Not able to Delete Label note" });
         }
 
+        [Authorize]
+        [HttpPatch("UpdateLabel")]
+
+        public IActionResult UpdateLabel(long noteId,long LabelID,string LabelName)
+        {
+            long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+            var userdata = labeBL.UpdateLabel(userId, noteId,LabelID,LabelName);
+            if (userdata != null)
+                return this.Ok(new { success = true, message = "Label Updated Successfully", data = userdata });
+            else
+                return this.BadRequest(new { success = false, message = "Not able to Update Label" });
+        }
+
     }
 }

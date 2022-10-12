@@ -15,8 +15,10 @@ namespace RepositoryLayer.Entities
 
         [ForeignKey("NoteEntity")]
         public long NoteId { get; set; }
+        //public virtual NoteEntity Note { get; set; }
 
         [ForeignKey("UserEntity")]
         public long UserID { get; set; }
+        //public virtual UserEntity User { get; set; }
     }
 }

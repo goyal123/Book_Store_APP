@@ -27,6 +27,7 @@ namespace RepositoryLayer.Entities
         //Adding foreign key constraint
         public long UserId { get; set; }
         //public virtual UserEntity User { get; set; }
+       
 
     }
    
