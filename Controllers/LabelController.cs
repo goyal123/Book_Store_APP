@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System;
 using BusinessLayer.Interface;
+using Microsoft.Extensions.Caching.Memory;
+using RepositoryLayer.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FundooNoteApp.Controllers
 {
@@ -13,10 +17,12 @@ namespace FundooNoteApp.Controllers
     public class LabelController : ControllerBase
     {
         private readonly ILabeBL labeBL;
+        private readonly IMemoryCache memoryCache;
 
-        public LabelController(ILabeBL labelBL)
+        public LabelController(ILabeBL labelBL,IMemoryCache memoryCache)
         {
             this.labeBL = labelBL;
+            this.memoryCache = memoryCache;
         }
 
         [Authorize]
@@ -61,14 +67,23 @@ namespace FundooNoteApp.Controllers
         [Authorize]
         [HttpGet]
 
-        public IActionResult GetLabel()
+        public async Task<IActionResult> GetLabel()
         {
-            long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
-            var userdata = labeBL.GetLabel(userId);
-            if (userdata != null)
-                return this.Ok(new { success = true, message = "Label Fetch Successfully", data = userdata });
+            long userId_label = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+            var cachekey = userId_label;
+            if (!memoryCache.TryGetValue(cachekey, out List<LabelEntity> cacheresult))
+            {
+                var userdata = labeBL.GetLabel(userId_label);
+                memoryCache.Set(cachekey, userdata);
+                if (userdata != null)
+                    return this.Ok(new { success = true, message = "Label Fetch Successfully", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Not able to Fetch Label" });
+            }
             else
-                return this.BadRequest(new { success = false, message = "Not able to Fetch Label" });
+                return this.Ok(new { success = true, message = "Label Fetch Successfully", data = cacheresult });
+
+
         }
 
     }

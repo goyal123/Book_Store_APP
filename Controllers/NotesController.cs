@@ -90,7 +90,7 @@ namespace FundooNoteApp.Controllers
                 if (!memoryCache.TryGetValue(cachekey, out List<NoteEntity> cacheresult))
                 {
                     var userdata = noteBL.GetNoteUser(userId);
-                    memoryCache.Set(cachekey, cacheresult);
+                    memoryCache.Set(cachekey,userdata);
                     if (userdata != null)
                         return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = userdata });
                     else

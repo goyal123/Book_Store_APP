@@ -6,6 +6,8 @@ using System;
 using BusinessLayer.Interface;
 using BusinessLayer.Service;
 using System.Collections.Generic;
+using Microsoft.Extensions.Caching.Memory;
+using RepositoryLayer.Entities;
 
 namespace FundooNoteApp.Controllers
 {
@@ -15,10 +17,12 @@ namespace FundooNoteApp.Controllers
     public class CollabController : ControllerBase
     {
         private readonly ICollabBL collabBL;
+        private readonly IMemoryCache memoryCache;
 
-        public CollabController(ICollabBL collabBL)
+        public CollabController(ICollabBL collabBL,IMemoryCache memoryCache)
         {
             this.collabBL = collabBL;
+            this.memoryCache = memoryCache;
         }
         [Authorize]
         [HttpPost("AddCollab")]
@@ -37,12 +41,20 @@ namespace FundooNoteApp.Controllers
         public IActionResult GetCollab()
         {
             long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
-            var userdata = collabBL.GetCollab(userId);
-            if (userdata != null)
-                return this.Ok(new { success = true, message = "Fetch Successfull", data = userdata });
-            else
-                return this.BadRequest(new { success = false, message = "Fetch operation failed" });
+            var cachekey = userId;
 
+            if (!memoryCache.TryGetValue(cachekey, out List<CollabEntity> cacheresult))
+            {
+                var userdata = collabBL.GetCollab(userId);
+                memoryCache.Set(cachekey, userdata);
+                if (userdata != null)
+                    return this.Ok(new { success = true, message = "Fetch Successfull", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Fetch operation failed" });
+
+            }
+            else
+                return this.Ok(new { success = true, message = " Fetch Successfully", data = cacheresult });
         }
 
         [Authorize]
