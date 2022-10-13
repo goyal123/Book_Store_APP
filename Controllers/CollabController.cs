@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Caching.Memory;
 using RepositoryLayer.Entities;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace FundooNoteApp.Controllers
 {
@@ -18,12 +21,13 @@ namespace FundooNoteApp.Controllers
     public class CollabController : ControllerBase
     {
         private readonly ICollabBL collabBL;
-        private readonly IMemoryCache memoryCache;
+        // private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
 
-        public CollabController(ICollabBL collabBL,IMemoryCache memoryCache)
+        public CollabController(ICollabBL collabBL, IDistributedCache distributedCache)
         {
             this.collabBL = collabBL;
-            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
         }
         [Authorize]
         [HttpPost("AddCollab")]
@@ -42,8 +46,32 @@ namespace FundooNoteApp.Controllers
         public async Task<IActionResult> GetCollab()
         {
             long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
-            var cachekey = userId;
+            var cachekey = Convert.ToString(userId);
+            string serializeddata;
+            List<CollabEntity> result;
 
+            var distcacheresult = await distributedCache.GetAsync(cachekey);
+            if (distcacheresult != null)
+            {
+                serializeddata = Encoding.UTF8.GetString(distcacheresult);
+                result = JsonConvert.DeserializeObject<List<CollabEntity>>(serializeddata);
+                return this.Ok(new { success = true, message = "fetch Successfully", data = result });
+            }
+            else
+            {
+                var userdata = collabBL.GetCollab(userId);
+                serializeddata = JsonConvert.SerializeObject(userdata);
+                distcacheresult = Encoding.UTF8.GetBytes(serializeddata);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+                await distributedCache.SetAsync(cachekey, distcacheresult, options);
+                if (userdata != null)
+                    return this.Ok(new { success = true, message = " Data fetch Successfully", data = userdata });
+                else
+                    return this.BadRequest(new { success = false, message = "Not able to fetch data" });
+            }
+            /*
             if (!memoryCache.TryGetValue(cachekey, out List<CollabEntity> cacheresult))
             {
                 var userdata = collabBL.GetCollab(userId);
@@ -56,6 +84,7 @@ namespace FundooNoteApp.Controllers
             }
             else
                 return this.Ok(new { success = true, message = " Fetch Successfully", data = cacheresult });
+            */
         }
 
         [Authorize]

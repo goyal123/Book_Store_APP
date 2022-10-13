@@ -19,6 +19,9 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Threading.Tasks;
 using RepositoryLayer.Entities;
 using System.Text.RegularExpressions;
+using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace FundooNoteApp.Controllers
 {
@@ -28,12 +31,13 @@ namespace FundooNoteApp.Controllers
     public class NotesController : ControllerBase
     {
         private readonly INoteBL noteBL;
-        private readonly IMemoryCache memoryCache;
+        //private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
 
-        public NotesController(INoteBL noteBL,IMemoryCache memoryCache)
+        public NotesController(INoteBL noteBL,IDistributedCache distributedCache)
         {
             this.noteBL = noteBL;
-            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
         }
 
         //[Authorize]
@@ -85,8 +89,37 @@ namespace FundooNoteApp.Controllers
         {
             try
             {
-               long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
-                var cachekey = userId;
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+                var cachekey =Convert.ToString(userId);
+                string serializeddata;
+                List<NoteEntity> result;
+
+                var distcacheresult = await distributedCache.GetAsync(cachekey);
+
+                if (distcacheresult!=null)
+                {
+                    serializeddata = Encoding.UTF8.GetString(distcacheresult);
+                    result = JsonConvert.DeserializeObject<List<NoteEntity>>(serializeddata);
+
+                    //return this.Ok(distcacheresult);
+                    return this.Ok(new { success = true, message = "Note Data fetch Successfully", data=result });
+                }
+                else
+                {
+                    var userdata = noteBL.GetNoteUser(userId);
+                    serializeddata=JsonConvert.SerializeObject(userdata);
+                    distcacheresult = Encoding.UTF8.GetBytes(serializeddata);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+                    await distributedCache.SetAsync(cachekey,distcacheresult,options);
+                    if (userdata != null)
+                        return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = userdata });
+                    else
+                        return this.BadRequest(new { success = false, message = "Not able to fetch notes" });
+                }
+                /*
                 if (!memoryCache.TryGetValue(cachekey, out List<NoteEntity> cacheresult))
                 {
                     var userdata = noteBL.GetNoteUser(userId);
@@ -99,7 +132,7 @@ namespace FundooNoteApp.Controllers
                 }
                 else
                     return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = cacheresult });
-
+                */
             }
             catch (Exception ex)
             {
