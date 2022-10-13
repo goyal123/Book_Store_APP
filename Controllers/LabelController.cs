@@ -69,11 +69,11 @@ namespace FundooNoteApp.Controllers
 
         public async Task<IActionResult> GetLabel()
         {
-            long userId_label = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
-            var cachekey = userId_label;
+            long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+            var cachekey = userId;
             if (!memoryCache.TryGetValue(cachekey, out List<LabelEntity> cacheresult))
             {
-                var userdata = labeBL.GetLabel(userId_label);
+                var userdata = labeBL.GetLabel(userId);
                 memoryCache.Set(cachekey, userdata);
                 if (userdata != null)
                     return this.Ok(new { success = true, message = "Label Fetch Successfully", data = userdata });

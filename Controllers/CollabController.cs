@@ -8,6 +8,7 @@ using BusinessLayer.Service;
 using System.Collections.Generic;
 using Microsoft.Extensions.Caching.Memory;
 using RepositoryLayer.Entities;
+using System.Threading.Tasks;
 
 namespace FundooNoteApp.Controllers
 {
@@ -38,7 +39,7 @@ namespace FundooNoteApp.Controllers
 
         [Authorize]
         [HttpGet("GetCollab")]
-        public IActionResult GetCollab()
+        public async Task<IActionResult> GetCollab()
         {
             long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
             var cachekey = userId;
