@@ -14,6 +14,11 @@ using System.Collections.Generic;
 using CloudinaryDotNet.Actions;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Threading.Tasks;
+using RepositoryLayer.Entities;
+using System.Text.RegularExpressions;
 
 namespace FundooNoteApp.Controllers
 {
@@ -23,10 +28,12 @@ namespace FundooNoteApp.Controllers
     public class NotesController : ControllerBase
     {
         private readonly INoteBL noteBL;
+        private readonly IMemoryCache memoryCache;
 
-        public NotesController(INoteBL noteBL)
+        public NotesController(INoteBL noteBL,IMemoryCache memoryCache)
         {
             this.noteBL = noteBL;
+            this.memoryCache = memoryCache;
         }
 
         //[Authorize]
@@ -74,16 +81,24 @@ namespace FundooNoteApp.Controllers
 
 
         [HttpGet("GetNote")]
-        public IActionResult GetNote()
+        public async Task<IActionResult> GetNote()
         {
             try
             {
-                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
-                var userdata = noteBL.GetNoteUser(userId);
-                if (userdata != null)
-                    return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = userdata });
+               long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
+                var cachekey = userId;
+                if (!memoryCache.TryGetValue(cachekey, out List<NoteEntity> cacheresult))
+                {
+                    var userdata = noteBL.GetNoteUser(userId);
+                    memoryCache.Set(cachekey, cacheresult);
+                    if (userdata != null)
+                        return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = userdata });
+                    else
+                        return this.BadRequest(new { success = false, message = "Not able to fetch notes" });
+
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Not able to fetch notes" });
+                    return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = cacheresult });
 
             }
             catch (Exception ex)

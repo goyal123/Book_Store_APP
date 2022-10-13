@@ -40,6 +40,7 @@ namespace FundooNoteApp
         {
             services.AddDbContext <FundooContext> (opts => opts.UseSqlServer(Configuration["ConnectionString:FundooDB"]));
             services.AddControllers();
+            services.AddMemoryCache();
             services.AddTransient<IUserRL, UserRL>();
             services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<INotesRL, NoteRL>();
@@ -48,6 +49,7 @@ namespace FundooNoteApp
             services.AddTransient<ICollabRL, CollabRL>();
             services.AddTransient<ILabeBL, LabelBL>();
             services.AddTransient<ILabelRL, LabelRL>();
+            
             /*
             services.AddSwaggerGen(c =>
             {
@@ -77,6 +79,11 @@ namespace FundooNoteApp
                 {
                     {jwtSecurityScheme,Array.Empty<string>() }
                 });
+            });
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:4455";
             });
 
             services.AddAuthentication(x =>

@@ -10,6 +10,7 @@
     <PackageReference Include="CloudinaryDotNet" Version="1.20.0" />
     <PackageReference Include="Experimental.System.Messaging" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.0" />
   </ItemGroup>
 
 </Project>
