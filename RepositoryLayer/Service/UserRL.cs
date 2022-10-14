@@ -30,7 +30,7 @@ namespace RepositoryLayer.Service
                 userEntity.FirstName = registration.FirstName;
                 userEntity.LastName = registration.LastName;
                 userEntity.Email = registration.Email;
-                userEntity.Password= registration.Password;
+                userEntity.Password= EncryptPassword(registration.Password);
                 fundooContext.UserTable.Add(userEntity);
                 int result=fundooContext.SaveChanges();
                 if (result > 0)
@@ -81,11 +81,25 @@ namespace RepositoryLayer.Service
             try
             {
                 LoginEntity loginentity = new LoginEntity();
-                var result= fundooContext.UserTable.Where(u => u.Email==login.Email && u.Password==login.Password).FirstOrDefault();
+                var data=fundooContext.UserTable.Where(u => u.Email==login.Email).SingleOrDefault();
+                if (data != null)
+                {
+                    bool isValid = DecryptPassword(data.Password) == login.Password;
+                    if (isValid)
+                        return GetJWTToken(data.Email, data.UserID);
+                    else
+                        return null;
+
+                }
+                else
+                    return null;
+                /*
+                var result= fundooContext.UserTable.Where(u => u.Email==login.Email && DecryptPassword(u.Password)==login.Password).FirstOrDefault();
                 if (result != null)
                     return GetJWTToken(result.Email, result.UserID);
                 else
                     return null;
+                */
             }
             catch (Exception ex)
             {
@@ -180,7 +194,46 @@ namespace RepositoryLayer.Service
                 throw new Exception(ex.Message);
             }
         }
-        
+
+        public static string EncryptPassword(string password)
+        {
+            try
+            {
+                if (password != null && password.Length > 0)
+                {
+                    byte[] storepassword = ASCIIEncoding.ASCII.GetBytes(password);
+                    string encrpytpassword = Convert.ToBase64String(storepassword);
+                    return encrpytpassword;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+
+
+        }
+        public static string DecryptPassword(string password)
+        {
+            if (password != null && password.Length > 0)
+            {
+                byte[] encrpytpassword = Convert.FromBase64String(password);
+                string decryptpassword = ASCIIEncoding.ASCII.GetString(encrpytpassword);
+                return decryptpassword;
+            }
+            else
+                return null;
+        }
+
+
+
 
     }
+
+    
 }

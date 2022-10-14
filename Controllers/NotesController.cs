@@ -336,15 +336,10 @@ namespace FundooNoteApp.Controllers
             {
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.Image(userId, noteId,file);
-                if (userdata.trash == true)
+                if (userdata!=null)
                 {
                     _logger.LogInformation("Image uploaded successfully from POST route");
                     return this.Ok(new { success = true, message = "Image uploaded successfully", data = userdata });
-                }
-                else if (userdata.trash == false)
-                {
-                    _logger.LogInformation("Image not uploaded from POST route");
-                    return this.Ok(new { success = true, message = "Image not uploaded", data = userdata });
                 }
                 else
                 {
