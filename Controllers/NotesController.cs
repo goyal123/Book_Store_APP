@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace FundooNoteApp.Controllers
 {
@@ -33,11 +34,13 @@ namespace FundooNoteApp.Controllers
         private readonly INoteBL noteBL;
         //private readonly IMemoryCache memoryCache;
         private readonly IDistributedCache distributedCache;
+        private readonly ILogger<NotesController> _logger;
 
-        public NotesController(INoteBL noteBL,IDistributedCache distributedCache)
+        public NotesController(INoteBL noteBL,IDistributedCache distributedCache,ILogger<NotesController> _logger)
         {
             this.noteBL = noteBL;
             this.distributedCache = distributedCache;
+            this._logger = _logger;
         }
 
         //[Authorize]
@@ -50,12 +53,19 @@ namespace FundooNoteApp.Controllers
                 //var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
                 var userdata = noteBL.CreateNoteUser(userId, createnote);
                 if (userdata != null)
+                {
+                    _logger.LogInformation("Note created Successfull from CreateNote API route");
                     return this.Ok(new { success = true, message = "Note created Successfull", data = userdata });
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Not able to create note" });
+                {
+                    _logger.LogInformation("Not able to create note from CreateNote API route");
+                    return this.BadRequest(new { success = false, message = "Not able to create note" }); 
+                }
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
         }
@@ -67,15 +77,22 @@ namespace FundooNoteApp.Controllers
             {
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.UpdateNoteUser(userId, noteId,updatenote);
-                if (userdata!=null)
+                if (userdata != null)
+                {
+                    _logger.LogInformation("Note updated Successfull from UpdateNote API route");
                     return this.Ok(new { success = true, message = "Note updated Successfull", data = userdata });
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Not able to update note" });
+                {
+                    _logger.LogInformation("Not able to update note from UpdateNote API route");
+                    return this.BadRequest(new { success = false, message = "Not able to update note" }); 
+                }
 
 
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
 
@@ -102,6 +119,7 @@ namespace FundooNoteApp.Controllers
                     result = JsonConvert.DeserializeObject<List<NoteEntity>>(serializeddata);
 
                     //return this.Ok(distcacheresult);
+                    _logger.LogInformation("Note Data fetch Successfully from GET route");
                     return this.Ok(new { success = true, message = "Note Data fetch Successfully", data=result });
                 }
                 else
@@ -110,14 +128,22 @@ namespace FundooNoteApp.Controllers
                     serializeddata=JsonConvert.SerializeObject(userdata);
                     distcacheresult = Encoding.UTF8.GetBytes(serializeddata);
                     var options = new DistributedCacheEntryOptions()
-                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
-                        .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(1))
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(1));
 
                     await distributedCache.SetAsync(cachekey,distcacheresult,options);
                     if (userdata != null)
+                    {
+                        //throw new Exception("akhil");
+                        _logger.LogInformation("Note Data fetch Successfully from GET route");
                         return this.Ok(new { success = true, message = "Note Data fetch Successfully", data = userdata });
+                    }
+
                     else
-                        return this.BadRequest(new { success = false, message = "Not able to fetch notes" });
+                    {
+                        _logger.LogInformation("Not able to fetch notes from GET Note route");
+                        return this.BadRequest(new { success = false, message = "Not able to fetch notes" }); 
+                    }
                 }
                 /*
                 if (!memoryCache.TryGetValue(cachekey, out List<NoteEntity> cacheresult))
@@ -136,6 +162,7 @@ namespace FundooNoteApp.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
 
@@ -150,13 +177,20 @@ namespace FundooNoteApp.Controllers
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.DeleteNoteUser(userId,noteId);
                 if (userdata == true)
+                {
+                    _logger.LogInformation("Note Deleted successfully from DELETE Note route");
                     return this.Ok(new { success = true, message = "Deleted successfully" });
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Delete Operation failed" });
+                {
+                    _logger.LogInformation("Not able to from DELETE Note route");
+                    return this.BadRequest(new { success = false, message = "Delete Operation failed" }); 
+                }
 
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
 
@@ -170,15 +204,22 @@ namespace FundooNoteApp.Controllers
             {
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.UpdateNoteColor(userId, noteId,color);
-                if (userdata!=null)
+                if (userdata != null)
+                {
+                    _logger.LogInformation("Color updated successfully from UPDATE COLOR route");
                     return this.Ok(new { success = true, message = "Color updated successfully", data = userdata });
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Update Operation failed" });
+                {
+                    _logger.LogInformation("Color updated failed from UPDATE COLOR route");
+                    return this.BadRequest(new { success = false, message = "Update Operation failed" }); 
+                }
 
 
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
 
@@ -192,18 +233,28 @@ namespace FundooNoteApp.Controllers
             {
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.Ispinned(userId, noteId);
-                if (userdata.pinned==true)
+                if (userdata.pinned == true)
+                {
+                    _logger.LogInformation("Note Pinned successfully from PATCH route");
                     return this.Ok(new { success = true, message = "Pinned successfully", data = userdata });
-                else if(userdata.pinned ==false)
+                }
+                else if (userdata.pinned == false)
+                {
+                    _logger.LogInformation("Note UnPinned successfully from PATCH route");
                     return this.Ok(new { success = true, message = "UnPinned successfully", data = userdata });
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Archieve Operation failed" });
+                {
+                    _logger.LogInformation("Note Pinned operation failed from PATCH route");
+                    return this.BadRequest(new { success = false, message = " Operation failed" }); 
+                }
 
 
 
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
 
@@ -218,16 +269,26 @@ namespace FundooNoteApp.Controllers
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.IsArchieve(userId, noteId);
                 if (userdata.archieve == true)
+                {
+                    _logger.LogInformation("Note Archieved successfully from PATCH route");
                     return this.Ok(new { success = true, message = "Archieved successfully", data = userdata });
-                else if(userdata.archieve == false)
+                }
+                else if (userdata.archieve == false)
+                {
+                    _logger.LogInformation("Note UnArchieved successfully from PATCH route");
                     return this.Ok(new { success = true, message = "UnArchieved successfully", data = userdata });
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Archieve Operation failed" });
+                {
+                    _logger.LogInformation("Note Archieved failed from PATCH route");
+                    return this.BadRequest(new { success = false, message = "Archieve Operation failed" }); 
+                }
 
 
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
         }
@@ -242,15 +303,25 @@ namespace FundooNoteApp.Controllers
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.IsTrashed(userId, noteId);
                 if (userdata.trash == true)
+                {
+                    _logger.LogInformation("Trashed successfully from PATCH route");
                     return this.Ok(new { success = true, message = "Trashed successfully", data = userdata });
+                }
                 else if (userdata.trash == false)
+                {
+                    _logger.LogInformation("UnTrashed successfully from PATCH route");
                     return this.Ok(new { success = true, message = "Untrashed successfully", data = userdata });
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Trash Operation failed" });
+                {
+                    _logger.LogInformation("Trashed failed from PATCH route");
+                    return this.BadRequest(new { success = false, message = "Trash Operation failed" }); 
+                }
 
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
 
@@ -266,16 +337,26 @@ namespace FundooNoteApp.Controllers
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(e => e.Type == "userID").Value);
                 var userdata = noteBL.Image(userId, noteId,file);
                 if (userdata.trash == true)
+                {
+                    _logger.LogInformation("Image uploaded successfully from POST route");
                     return this.Ok(new { success = true, message = "Image uploaded successfully", data = userdata });
+                }
                 else if (userdata.trash == false)
+                {
+                    _logger.LogInformation("Image not uploaded from POST route");
                     return this.Ok(new { success = true, message = "Image not uploaded", data = userdata });
+                }
                 else
-                    return this.BadRequest(new { success = false, message = "Image upload Operation failed" });
+                {
+                    _logger.LogInformation("Image operation failed from POST route");
+                    return this.BadRequest(new { success = false, message = "Image upload Operation failed" }); 
+                }
 
 
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 throw new Exception(ex.Message);
             }
         }

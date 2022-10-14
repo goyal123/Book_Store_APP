@@ -10,6 +10,7 @@
     <PackageReference Include="CloudinaryDotNet" Version="1.20.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.4" />
   </ItemGroup>
 
   <ItemGroup>
